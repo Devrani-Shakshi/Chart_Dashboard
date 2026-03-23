@@ -1,0 +1,119 @@
+.text-light-gray {
+  color: #e0e0e0;
+}
+
+.bi-star-fill {
+  margin-right: 2px;
+  font-size: 1.2rem;
+}
+
+.bi-star {
+  margin-right: 2px;
+  font-size: 1.2rem;
+}
+
+.bi-star-half {
+  margin-right: 2px;
+  font-size: 1.2rem;
+}
+
+.text-success {
+  color: #28a745 !important;
+  font-weight: 500;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: 500;
+}
+
+#stars {
+  display: flex;
+  gap: 5px;
+}
+
+.chart-container{
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  /* padding: 20px; */
+  padding: 0px;
+  height: 100%;
+}
+
+p {
+  font-size: medium;
+}
+ 
+.btn-sm {
+  min-width: 35px;
+  border-radius: 4px;
+}
+
+/* .chart-main {
+  width: 100%;
+  padding: 0 44px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+} */
+.chart-box-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(245, 247, 249, 1);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.scrollable-div {
+ height: 400px;
+ overflow-y: auto;
+ overflow-x: hidden;
+}
+
+/* To make it responsive  */
+@media screen and (min-width: 480px) and (max-width: 650px) {
+  .bi-star-fill {
+    margin-right: 1px;
+    font-size: 0.8rem;
+  }
+
+  .bi-star {
+    margin-right: 1px;
+    font-size: 0.8rem;
+  }
+
+  .bi-star-half {
+    margin-right: 1px;
+    font-size: 0.8rem;
+  }
+
+  p {
+    font-size: smaller;
+  }
+
+  #date_rating,
+  #date_exprires {
+    font-size: small;
+  }
+
+  #starsss {
+    font-size: small;
+  }
+
+  #Expires,
+  #Rating,
+  #previous,
+  #Subheading {
+    font-size: smaller;
+
+    mat-icon {
+      display: none;
+    }
+  }
+} 
