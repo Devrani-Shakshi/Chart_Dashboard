@@ -12,10 +12,14 @@ export class CertificationService {
   private currentPageSubject = new BehaviorSubject<number>(1);
   currentPage$ = this.currentPageSubject.asObservable();
 
+
+  //for all data
   getCertifications(): Observable<Certification[]> {
      return of(Data);
    }
 
+
+   //paged data 
   getPagedData(): Observable<Certification[]> {
     return this.currentPage$.pipe(
       map(page => {
@@ -25,6 +29,7 @@ export class CertificationService {
     );
   }
 
+  //if button is updated 
   setPage(page: number) {
     this.currentPageSubject.next(page);
   }
@@ -33,8 +38,8 @@ export class CertificationService {
     return Math.ceil(Data.length / this.pageSize);
   }
 
-  get portfolioAverage(): number {
-    const total = Data.reduce((acc, curr) => acc + curr.rating, 0);
-    return parseFloat((total / Data.length).toFixed(2));
-  }
+  // get portfolioAverage(): number {
+  //   const total = Data.reduce((acc, curr) => acc + curr.rating, 0);
+  //   return parseFloat((total / Data.length).toFixed(2));
+  // }
 }

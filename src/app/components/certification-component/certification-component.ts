@@ -1,10 +1,10 @@
-
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ChartDashboard } from '../chart-dashboard/chart-dashboard';
 import { CertificationService } from '../../service/certification-service';
 import { Certification } from '../../models/cert.model';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-certification-component',
@@ -19,30 +19,19 @@ export class CertificationsComponent implements OnInit {
   public allCertifications: Certification[] = [];
   currentPage = 1;
   portfolioAverage: number = 0;
-  maxVisibleButtons = 3;
+  maxVisibleButtons = environment.maxVisibleButtons;
   selectedRowIndex: number | null = null;
   ngOnInit() {
-    this.certService.getPagedData().subscribe(data => {
+    this.certService.getPagedData().subscribe((data) => {
       this.pagedCerts = data;
       this.portfolioAverage = this.calculateAverage(data);
     });
-    this.certService.currentPage$.subscribe(page => this.currentPage = page);
-      this.certService.getCertifications().subscribe((data) => { this.allCertifications = data ;
+
+    this.certService.currentPage$.subscribe((page) => (this.currentPage = page));
+    this.certService.getCertifications().subscribe((data) => {
+      this.allCertifications = data;
     });
   }
-
-  
-// Inside your Parent Component class
-// ngAfterViewInit() {
-//   const modalEl = document.getElementById('myModalChart');
-//   modalEl?.addEventListener('shown.bs.modal', () => {
-//     // Force a window resize event so Chart.js recalculates its width
-//     window.dispatchEvent(new Event('resize'));
-//   });
-// }
-
-
-    
 
   // 1. Handle selection coming FROM the Chart
   handleChartSelection(event: { index: number | null }) {
@@ -61,16 +50,19 @@ export class CertificationsComponent implements OnInit {
     this.selectedRowIndex = null;
   }
 
-
   calculateAverage(certs: Certification[]): number {
     if (!certs.length) return 0;
     const total = certs.reduce((sum, cert) => sum + (cert.rating || 0), 0);
     return parseFloat((total / certs.length).toFixed(2));
-    
   }
-  getStars(rating: number) { 
-    return Array(Math.floor(rating || 0)).fill(0); 
-  }
+  
+
+getStars(rating: number) {
+  return Array.from({ length: rating }, (_, i) => i + 1);
+}
+ 
+
+
 
   formatDateString(dateStr: string): Date {
     const [day, month, year] = dateStr.split('-').map(Number);
@@ -83,19 +75,20 @@ export class CertificationsComponent implements OnInit {
     return 'text-muted';
   }
 
-  get totalPages() { return this.certService.totalPages; }
-  setPage(page: number) { 
+  // pagination
+  get totalPages() {
+    return this.certService.totalPages;
+  }
+  setPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
-      this.certService.setPage(page); 
+      this.certService.setPage(page);
     }
   }
 
-
-
-get visiblePages(): number[] {
+  get visiblePages(): number[] {
     const total = this.totalPages;
     const max = this.maxVisibleButtons;
-    
+
     // Calculate sliding window
     let start = Math.max(1, this.currentPage - Math.floor(max / 2));
     let end = start + max - 1;
@@ -111,10 +104,4 @@ get visiblePages(): number[] {
     }
     return pages;
   }
-
-
-
-
-
-
 }

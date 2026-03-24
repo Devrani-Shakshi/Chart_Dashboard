@@ -1,7 +1,7 @@
-<!-- Chart Data  -->
+<!-- Chart Data start -->
 <div class="chart-main">
   <div class="d-flex justify-content-between">
-    <h2> Chart Data </h2>
+     <h3 class="h4 mb-2"><mat-icon color="primary">dashboard</mat-icon> Chart - Data</h3>
     <a href="" data-bs-toggle="modal" data-bs-target="#myModalChart"> View All</a>
   </div>
 
@@ -11,6 +11,7 @@
   </div>
 </div>
 
+ <!-- Modal start -->
 <div class="modal" id="myModalChart" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-fullscreen ">
     <div class="modal-content ">
@@ -28,24 +29,20 @@
     </div>
   </div>
 </div>
-
-
-
-
-
+<!-- Chart Data end -->
 
 
 <!-- Table Data  -->
 <div id="complete_table_daata">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <div class="container-fluid mt-4 p-4">
+  <div class="container-fluid  p-4">
     <div class="d-flex justify-content-between align-items-center">
       <h3 class="h4 mb-2"><i class="bi bi-star text-primary me-2"></i>Certifications</h3>
       <a href="" data-bs-toggle="modal" data-bs-target="#myModalTable"> View All</a>
     </div>
   </div>
-  <div class="container-fluid mt-4 p-4 bg-white border rounded shadow-sm">
-    <div class="row text-muted small fw-bold mb-2 pb-2">
+  <div class="container-fluid  p-4 bg-white border rounded shadow-sm">
+    <div class="row text-muted small fw-bold mb-2 pb-2 ">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="col-3">NABERS</div>
         <div class="text-end">
@@ -56,6 +53,7 @@
           </div>
         </div>
       </div>
+      <!-- headings -->
       <div class="col-4" id="Subheading">Subheading</div>
       <div class="col-3" id="previous">vs previous year</div>
       <div class="col-3" style="display: flex; gap: 2%" id="Rating">
@@ -65,14 +63,14 @@
         Expires <mat-icon color="primary">info</mat-icon>
       </div>
     </div>
-
+  <!-- data showing rows -->
     <div *ngFor="let item of pagedCerts; let i = index" class="row align-items-center mb-1 p-1 custom-row"
       [class.highlighted]="i === selectedRowIndex" [class.faded]="selectedRowIndex !== null && i !== selectedRowIndex"
       (click)="selectedRowIndex = i; $event.stopPropagation()">
       <div class="col-4 text-muted">
         <p>
           {{ item.buildingName }} <br />
-          <ng-container *ngFor="let star of getStars(6)">
+          <ng-container *ngFor="let star of getStars(6)">          
             <i *ngIf="item.rating >= star" class="bi bi-star-fill text-primary"></i>
             <i *ngIf="item.rating < star && item.rating > star - 1" class="bi bi-star-half text-primary"></i>
             <i *ngIf="item.rating <= star - 1" class="bi bi-star text-light-gray"></i>
@@ -124,7 +122,9 @@
   <!-- pagination end -->
 </div>
 
-<!-- The Modal -->
+
+
+<!-- Table --- Modal -->
 <div class="modal modal-lg" id="myModalTable">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -188,3 +188,5 @@
     </div>
   </div>
 </div>
+
+

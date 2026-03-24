@@ -32,19 +32,23 @@
   gap: 5px;
 }
 
-.chart-container{
+.chart-container {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  /* padding: 20px; */
   padding: 0px;
   height: 100%;
 }
 
+
+#complete_table_daata{
+  padding-left: 2%;
+  padding-right: 2%;
+}
 p {
   font-size: medium;
 }
- 
+
 .btn-sm {
   min-width: 35px;
   border-radius: 4px;
@@ -65,8 +69,8 @@ p {
 
 /* 2. FADED: All other rows when one is selected */
 .custom-row.faded {
-  opacity: 0.3; /* This dims the non-selected rows */
-  filter: grayscale(50%); /* Optional: makes them look less "active" */
+  opacity: 0.3; 
+  filter: grayscale(50%); 
 }
 
 /* Hover effect for better UX */
@@ -75,9 +79,8 @@ p {
   opacity: 0.8;
 }
 
-
 /* To make it responsive  */
-@media screen and (min-width: 480px) and (max-width: 650px) {
+@media screen and (min-width: 200px) and (max-width: 650px) {
   .bi-star-fill {
     margin-right: 1px;
     font-size: 0.8rem;
@@ -116,21 +119,21 @@ p {
       display: none;
     }
   }
-} 
-
-
-
+}
 
 .chart-main {
   width: 100%;
   padding: 0 44px;
+  
   display: flex;
   flex-direction: column;
   padding-top: 20px;
-} 
+}
 .chart-box-main {
   width: 100%;
   display: flex;
+    height: auto !important;
+  min-height: 300px;
   flex-direction: column;
   padding: 32px;
   border-radius: 8px;
@@ -140,39 +143,19 @@ p {
   /* margin-bottom: 32px; */
   position: relative;
 }
-
-/* 
-.modal-fullscreen{
-  height: fit-content;
-} */
-
-/* 
-.modal-dialog {
-      max-width: 600px; /* Optional: control width 
-    }
-
-    .modal-content {
-      height: 500px; /* Fixed height 
-    }
-
-    /* Make modal body scrollable if content overflows */
-    /* .modal-body {
-      overflow-y: auto;
-    } */
-
 .scrollable-div {
- overflow-y: auto;
- overflow-x: hidden; 
+  overflow-y: auto;
+  overflow-x: hidden;
 
-     width: 80vw;
-    /* height: 80vh; */
-    border: none;
-    border-radius: 12px;
-}  
+  width: 80vw;
 
+  border: none;
+  border-radius: 12px;
+}
 
-/* scrollable.component.css */
-/* .scrollable-container {
-  overflow-y: auto;     
-  padding: 8px;
-} */
+/* Ensure the modal body can scroll */
+.modal-body {
+  max-height: 80vh; /* Or any fixed height you prefer */
+  overflow-y: auto;
+  padding: 20px;
+}
