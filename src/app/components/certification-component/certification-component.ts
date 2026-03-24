@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CertificationService } from '../../service/certification-service';
-import { Certification } from '../../models/cert.model';
 import { MatIconModule } from '@angular/material/icon';
 import { ChartDashboard } from '../chart-dashboard/chart-dashboard';
+import { CertificationService } from '../../service/certification-service';
+import { Certification } from '../../models/cert.model';
 
 @Component({
   selector: 'app-certification-component',
@@ -13,58 +14,89 @@ import { ChartDashboard } from '../chart-dashboard/chart-dashboard';
   styleUrl: './certification-component.css',
 })
 export class CertificationsComponent implements OnInit {
-  certs: Certification[] = [];
+  private certService = inject(CertificationService);
+  pagedCerts: Certification[] = [];
+  public allCertifications: Certification[] = [];
+  currentPage = 1;
   portfolioAverage: number = 0;
-  // Define these variables in your class
-  currentPage: number = 1;
-  pageSize: number = 10; // Items per page
-  maxVisibleButtons: number = 3;
-
-  constructor(public certService: CertificationService) {}
-
+  maxVisibleButtons = 3;
+  selectedRowIndex: number | null = null;
   ngOnInit() {
-    this.certService.getCertifications().subscribe((data) => {
-      this.certs = data;
+    this.certService.getPagedData().subscribe(data => {
+      this.pagedCerts = data;
       this.portfolioAverage = this.calculateAverage(data);
     });
+    this.certService.currentPage$.subscribe(page => this.currentPage = page);
+      this.certService.getCertifications().subscribe((data) => { this.allCertifications = data ;
+    });
   }
+
+  
+// Inside your Parent Component class
+// ngAfterViewInit() {
+//   const modalEl = document.getElementById('myModalChart');
+//   modalEl?.addEventListener('shown.bs.modal', () => {
+//     // Force a window resize event so Chart.js recalculates its width
+//     window.dispatchEvent(new Event('resize'));
+//   });
+// }
+
+
+    
+
+  // 1. Handle selection coming FROM the Chart
+  handleChartSelection(event: { index: number | null }) {
+    this.selectedRowIndex = event.index;
+  }
+
+  // 2. Handle selection coming FROM a Grid Row click
+  onRowClick(index: number, event: MouseEvent) {
+    event.stopPropagation(); // Prevents the global "click away" reset
+    this.selectedRowIndex = index;
+  }
+
+  // 3. Global Click: Reset if user clicks anywhere else on the page
+  @HostListener('document:click')
+  onGlobalClick() {
+    this.selectedRowIndex = null;
+  }
+
+
+  calculateAverage(certs: Certification[]): number {
+    if (!certs.length) return 0;
+    const total = certs.reduce((sum, cert) => sum + (cert.rating || 0), 0);
+    return parseFloat((total / certs.length).toFixed(2));
+    
+  }
+  getStars(rating: number) { 
+    return Array(Math.floor(rating || 0)).fill(0); 
+  }
+
   formatDateString(dateStr: string): Date {
     const [day, month, year] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day);
   }
 
-  calculateAverage(data: Certification[]): number {
-    if (!data.length) return 0;
-    const total = data.reduce((acc, curr) => acc + curr.rating, 0);
-    return parseFloat((total / data.length).toFixed(2));
-  }
-  getStars(rating: number): number[] {
-    return [1, 2, 3, 4, 5, 6];
-  }
-
-  getComparisonClass(val: string): string {
-    if (!val) return 'text-muted';
-    if (val.includes('+')) return 'text-success';
-    if (val.includes('-')) return 'text-danger';
+  getComparisonClass(val: string) {
+    if (val?.includes('+')) return 'text-success';
+    if (val?.includes('-')) return 'text-danger';
     return 'text-muted';
   }
 
-  //pagination Logic start
-
-  get totalPages(): number {
-    return Math.ceil(this.certs.length / this.pageSize);
+  get totalPages() { return this.certService.totalPages; }
+  setPage(page: number) { 
+    if (page >= 1 && page <= this.totalPages) {
+      this.certService.setPage(page); 
+    }
   }
 
-  // Data to show on current page
-  get pagedCerts() {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.certs.slice(startIndex, startIndex + this.pageSize);
-  }
 
-  // Logic to show only 3 buttons
-  get visiblePages(): number[] {
+
+get visiblePages(): number[] {
     const total = this.totalPages;
     const max = this.maxVisibleButtons;
+    
+    // Calculate sliding window
     let start = Math.max(1, this.currentPage - Math.floor(max / 2));
     let end = start + max - 1;
 
@@ -74,15 +106,15 @@ export class CertificationsComponent implements OnInit {
     }
 
     const pages = [];
-    for (let i = start; i <= end; i++) pages.push(i);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
     return pages;
   }
 
-  setPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-    }
-  }
 
-  //pagination Logic end
+
+
+
+
 }

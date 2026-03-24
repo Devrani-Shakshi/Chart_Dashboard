@@ -1,4 +1,5 @@
-canvas {
+:host {
   display: block;
-  margin: 0 auto;
+  width: 100%;
+  /* Remove any fixed heights here */
 }

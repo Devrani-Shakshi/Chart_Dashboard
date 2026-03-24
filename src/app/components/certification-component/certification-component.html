@@ -1,89 +1,190 @@
-
-
- <!-- Chart Data  -->
-  <div class="chart-box-main">
-    <app-chart-dashboard> </app-chart-dashboard>
+<!-- Chart Data  -->
+<div class="chart-main">
+  <div class="d-flex justify-content-between">
+    <h2> Chart Data </h2>
+    <a href="" data-bs-toggle="modal" data-bs-target="#myModalChart"> View All</a>
   </div>
 
+  <div class="chart-box-main">
+    <app-chart-dashboard [activeIndex]="selectedRowIndex" (rowSelected)="handleChartSelection($event)">
+    </app-chart-dashboard>
+  </div>
+</div>
 
-  <!-- Table Data  -->
-<div >
+<div class="modal" id="myModalChart" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-fullscreen ">
+    <div class="modal-content ">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Rating Details of Sites Chart</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="chart-box-main">
+          <app-chart-dashboard [showAll]="true"></app-chart-dashboard>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Table Data  -->
+<div id="complete_table_daata">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <div class="container-fluid mt-4 p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center">
       <h3 class="h4 mb-2"><i class="bi bi-star text-primary me-2"></i>Certifications</h3>
+      <a href="" data-bs-toggle="modal" data-bs-target="#myModalTable"> View All</a>
     </div>
-    <div class="container-fluid mt-4 p-4 bg-white border rounded shadow-sm">
-      <div class="row text-muted small fw-bold mb-2 pb-2">
+  </div>
+  <div class="container-fluid mt-4 p-4 bg-white border rounded shadow-sm">
+    <div class="row text-muted small fw-bold mb-2 pb-2">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="col-3">NABERS</div>
+        <div class="text-end">
+          <div><small class="text-muted d-block">Portfolio average</small></div>
+          <div>
+            <span class="h4 fw-bold" style="display: flex; align-items: center; gap: 2%">
+              <mat-icon color="primary">stars</mat-icon> {{ portfolioAverage }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-4" id="Subheading">Subheading</div>
+      <div class="col-3" id="previous">vs previous year</div>
+      <div class="col-3" style="display: flex; gap: 2%" id="Rating">
+        Rating period <mat-icon color="primary">info</mat-icon>
+      </div>
+      <div class="col-2" style="display: flex; gap: 2%; justify-content: right" id="Expires">
+        Expires <mat-icon color="primary">info</mat-icon>
+      </div>
+    </div>
+
+    <div *ngFor="let item of pagedCerts; let i = index" class="row align-items-center mb-1 p-1 custom-row"
+      [class.highlighted]="i === selectedRowIndex" [class.faded]="selectedRowIndex !== null && i !== selectedRowIndex"
+      (click)="selectedRowIndex = i; $event.stopPropagation()">
+      <div class="col-4 text-muted">
+        <p>
+          {{ item.buildingName }} <br />
+          <ng-container *ngFor="let star of getStars(6)">
+            <i *ngIf="item.rating >= star" class="bi bi-star-fill text-primary"></i>
+            <i *ngIf="item.rating < star && item.rating > star - 1" class="bi bi-star-half text-primary"></i>
+            <i *ngIf="item.rating <= star - 1" class="bi bi-star text-light-gray"></i>
+          </ng-container>
+        </p>
+      </div>
+      <div class="col-3" [ngClass]="getComparisonClass(item.comparison)" id="starsss">
+        <mat-icon>
+          {{
+          item.comparison?.includes('+')
+          ? 'trending_up'
+          : item.comparison?.includes('-')
+          ? 'trending_down'
+          : 'minimize'
+          }}
+        </mat-icon>
+        {{ item.comparison || 'No data' }}
+      </div>
+
+      <div class="col-3 text-muted" id="date_rating">
+        {{ formatDateString(item.ratingPeriod.split(' - ')[0]) | date: 'MMM yyyy' }} -
+        {{ formatDateString(item.ratingPeriod.split(' - ')[1]) | date: 'MMM yyyy' }}
+      </div>
+
+      <div class="col-2 text-muted text-end" id="date_exprires">
+        {{ formatDateString(item.expires) | date: 'dd MMM yyyy' }}
+      </div>
+    </div>
+  </div>
+  <!-- pagination -->
+  <div class="d-flex justify-content-center align-items-center mt-4 gap-2">
+    <!-- Previous Button -->
+    <button class="btn btn-outline-primary btn-sm" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+      <i class="material-icons" style="font-size: 18px; vertical-align: middle">chevron_left</i>
+    </button>
+
+    <!-- Dynamic Page Numbers (Loops through visiblePages) -->
+    <button *ngFor="let page of visiblePages" class="btn btn-sm"
+      [ngClass]="currentPage === page ? 'btn-primary' : 'btn-outline-primary'" (click)="setPage(page)">
+      {{ page }}
+    </button>
+
+    <!-- Next Button -->
+    <button class="btn btn-outline-primary btn-sm" [disabled]="currentPage === totalPages"
+      (click)="setPage(currentPage + 1)">
+      <i class="material-icons" style="font-size: 18px; vertical-align: middle">chevron_right</i>
+    </button>
+  </div>
+  <!-- pagination end -->
+</div>
+
+<!-- The Modal -->
+<div class="modal modal-lg" id="myModalTable">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Rating Details of Sites</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <!-- Modal Body -->
+      <div class="modal-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <div class="col-3">NABERS</div>
-          <div class="text-end">
-            <div><small class="text-muted d-block">Portfolio average</small></div>
-            <div>
-              <span class="h4 fw-bold" style="display: flex; align-items: center; gap:  2%">
-                <mat-icon color="primary">stars</mat-icon> {{ portfolioAverage }}</span>
+          <h3 class="h4 mb-2"><i class="bi bi-star text-primary me-2"></i>Certifications</h3>
+        </div>
+        <div class="container-fluid mt-4 p-4 bg-white border rounded shadow-sm">
+          <div class="row text-muted small fw-bold mb-2 pb-2">
+            <div class="col-4" id="Subheading">Subheading</div>
+            <div class="col-3" id="previous">vs previous year</div>
+            <div class="col-3" style="display: flex; gap: 2%" id="Rating">
+              Rating period
+            </div>
+            <div class="col-2" style="display: flex; gap: 2%; justify-content: right" id="Expires">
+              Expires
+            </div>
+          </div>
+
+          <div *ngFor="let item of allCertifications" class="row align-items-center mb-1 p-1 custom-row">
+            <div class="col-4 text-muted">
+              <p>
+                {{ item.buildingName }} <br />
+                <ng-container *ngFor="let star of getStars(6)">
+                  <i *ngIf="item.rating >= star" class="bi bi-star-fill text-primary"></i>
+                  <i *ngIf="item.rating < star && item.rating > star - 1" class="bi bi-star-half text-primary"></i>
+                  <i *ngIf="item.rating <= star - 1" class="bi bi-star text-light-gray"></i>
+                </ng-container>
+              </p>
+            </div>
+            <div class="col-3" [ngClass]="getComparisonClass(item.comparison)" id="starsss">
+              <mat-icon>
+                {{
+                item.comparison?.includes('+')
+                ? 'trending_up'
+                : item.comparison?.includes('-')
+                ? 'trending_down'
+                : 'minimize'
+                }}
+              </mat-icon>
+              {{ item.comparison || 'No data' }}
+            </div>
+
+            <div class="col-3 text-muted" id="date_rating">
+              {{ formatDateString(item.ratingPeriod.split(' - ')[0]) | date: 'MMM yyyy' }} -
+              {{ formatDateString(item.ratingPeriod.split(' - ')[1]) | date: 'MMM yyyy' }}
+            </div>
+
+            <div class="col-2 text-muted text-end" id="date_exprires">
+              {{ formatDateString(item.expires) | date: 'dd MMM yyyy' }}
             </div>
           </div>
         </div>
-        <div class="col-4" id="Subheading">Subheading</div>
-        <div class="col-3" id="previous">vs previous year</div>
-        <div class="col-3" style="display: flex; gap: 2% " id="Rating">
-          Rating period <mat-icon color="primary">info</mat-icon>
-        </div>
-        <div class="col-2" style="display: flex; gap:  2%; justify-content: right" id="Expires">
-          Expires <mat-icon color="primary">info</mat-icon>
-        </div>
       </div>
-
-      <div *ngFor="let item of pagedCerts" class="row align-items-center mb-1 p-1">
-        <div class="col-4 text-muted">
-          <p> {{ item.buildingName }} <br>
-            <ng-container *ngFor="let star of getStars(6)">
-              <i *ngIf="item.rating >= star" class="bi bi-star-fill text-primary"></i>
-              <i *ngIf="item.rating < star && item.rating > star - 1" class="bi bi-star-half text-primary"></i>
-              <i *ngIf="item.rating <= star - 1" class="bi bi-star text-light-gray"></i>
-            </ng-container>
-          </p>
-        </div>
-
-        <div class="col-3" [ngClass]="getComparisonClass(item.comparison)" id="starsss">
-          <mat-icon>
-            {{
-            item.comparison?.includes('+')
-            ? 'trending_up'
-            : item.comparison?.includes('-')
-            ? 'trending_down'
-            : 'minimize'
-            }}
-          </mat-icon>
-          {{ item.comparison || 'No data' }}
-        </div>
-
-        <div class="col-3 text-muted" id="date_rating">
-          {{ formatDateString(item.ratingPeriod.split(' - ')[0]) | date: 'MMM yyyy' }} -
-          {{ formatDateString(item.ratingPeriod.split(' - ')[1]) | date: 'MMM yyyy' }}
-        </div>
-
-        <div class="col-2 text-muted text-end" id="date_exprires">
-          {{ formatDateString(item.expires) | date: 'dd MMM yyyy' }}
-        </div>
-      </div>
-    </div>
-    <!-- Pagination Controls -->
-    <div class="d-flex justify-content-center align-items-center mt-4 gap-2">
-      <button class="btn btn-outline-primary btn-sm" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
-        <i class="material-icons" style="font-size: 18px; vertical-align: middle;">chevron_left</i>
-      </button>
-
-      <button *ngFor="let page of visiblePages" class="btn btn-sm"
-        [ngClass]="currentPage === page ? 'btn-primary' : 'btn-outline-primary'" (click)="setPage(page)">
-        {{ page }}
-      </button>
-
-      <button class="btn btn-outline-primary btn-sm" [disabled]="currentPage === totalPages"
-        (click)="setPage(currentPage + 1)">
-        <i class="material-icons" style="font-size: 18px; vertical-align: middle;">chevron_right</i>
-      </button>
     </div>
   </div>
 </div>

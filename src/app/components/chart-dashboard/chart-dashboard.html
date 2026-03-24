@@ -1,5 +1,16 @@
 
-<div>
-  <h2>Receivables</h2>
-  <canvas id="receivablesVsReceivedChart" width="600" height="400"></canvas>
+ <!-- <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+      <canvas id="certificateChart"></canvas>
+    </div>  -->
+
+<!-- 
+    <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+  <canvas #chartCanvas></canvas>
+</div> -->
+
+<div 
+     style="position: relative; width: 100%;"
+     [ngStyle]="{ height: showAll ? '100%' : '300px' }">
+  <canvas #chartCanvas></canvas>
 </div>
+
